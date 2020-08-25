@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <title>Portal Answers</title>
+        <style>
+            body {
+                background-color: #121212;
+                color: white;
+                /*text-align: center;*/
+                font-family: sans-serif;
+                font-size: 20px;
+                margin-top: 2%;
+                margin-right: 10%;
+                margin-left: 10%;
+                margin-bottom: 10px;
+            }
+            /* unvisited link */
+            a:link {
+                color: #ffffff;
+            }
+            /* visited link */
+            a:visited {
+                color: #ffffff;
+            }
+            /* hovered link */
+            a:hover {
+                color: #a10030
+            }
+            /* selected link */
+            a:active {
+                color: #ac0101;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Portal Answers</h1>
+        <p id="data"></p>
+        <p><a href="index.html">Home</p>
+
+
+        <script>
+            // Getting the data from the user.
+            // data is the raw data from the website.
+            var data = window.prompt("Paste the contents of the XHR document: ");
+
+            // startingLocation is the index of the first instance of correct_answer_id.
+            var startingLocation = data.search("correct_answer_id");
+
+            // subby is the substring of the raw data containing the important information.
+            var subby = data.substring(startingLocation);
+
+            // Getting and displaying the number of questions on the quiz.
+            var numQuestions = occurrences(subby, "correct_answer_id");
+            document.getElementById("data").innerHTML = "Number of Question: " + numQuestions + "<br><br>";
+
+            // Listing the questions on the test.
+            // for (i = 0; i < numQuestions; i++) {
+            //     // Finding the beginning of the question.
+            //     var questionBeginning = subby.search("question_text\":\"");
+            //     // Finding the end of the question.
+            //     var questionEnding = subby.search("\",\"active\"");
+            //     var sectionEnding = subby.search("}}]},{");
+            //     // Creating a substring containing only the question's text.
+            //     var questionSubString = subby.substring(questionBeginning + 16, questionEnding);
+
+            //     var correctAnswerIDLocation = subby.search("correct_answer_id");
+            //     var correct_answer_id = subby.substring(correctAnswerIDLocation + 19, correctAnswerIDLocation + 23);
+            //     var answerBeginning = subby.search("\"id\":" + correct_answer_id);
+            //     var answerEnding = subby.search("\",\"created_at\"");
+            //     // var correctAnswer = subby.substring(answerBeginning + 19, answerEnding);
+            //     var correctAnswer = subby.substring(answerBeginning, answerEnding);
+            //     console.log(answerBeginning);
+
+            //     // Displaying the question on the page.
+            //     document.getElementById("data").innerHTML += "Question: " + questionSubString + "<br>" + "Answer: " + correctAnswer + "<br><br>";
+            //     // Making the substring smaller in order to advance to the next question.
+            //     subby = subby.substring(sectionEnding + 17);
+            // }
+
+
+            for (i = 0; i < numQuestions; i++) {
+                // Finding the beginning and end of the section.
+                var sectionBeginning = subby.search("correct_answer_id");
+                var sectionEnding = subby.search("}}]}") + 15;
+                var sectionaText = subby.substring(sectionBeginning, sectionEnding);
+
+                // Finding the beginning and end of the question.
+                var questionBeginning = subby.search("question_text") + 16;
+                var questionEnding = subby.search("\",\"active\"");
+                var questionText = subby.substring(questionBeginning, questionEnding);
+
+                // Finding the beginning and end of the correct answer ID.
+                var answerIDBeginning = sectionBeginning + 19;
+                var answerIDEnding = sectionBeginning + 23;
+                var answerID = subby.substring(answerIDBeginning, answerIDEnding);
+
+                // Finding the beginning and end of the answer.
+                var tempAnswerString = subby.substring(sectionBeginning + 30, sectionEnding);
+                // var answerBeginning = tempAnswerString.search(answerID) + 65;
+
+                
+                // If the answer ID is 3 digits
+                if (tempAnswerString.search(answerID + "\",answer\":") == -1) {
+                    var answerBeginning = tempAnswerString.search(answerID + "\"answer\":") + 14;
+                }
+
+                // If the answer ID is 4 digits
+                if (tempAnswerString.search(answerID + "\"answer\":") == -1) {
+                    var answerBeginning = tempAnswerString.search(answerID + ",\"answer\":") + 15;
+                }
+                
+                var tempAnswerString2 = tempAnswerString.substring(answerBeginning - 14, answerBeginning + 50);
+                
+                var answerEnding = answerBeginning + 25;
+
+                var answerEnding2 = tempAnswerString2.search("created_at") - 3;
+                console.log(answerBeginning);
+
+                var answerBeginning2 = tempAnswerString2.search(answerID + ",\"answer\":") + 15;
+                
+
+
+                // var answer = tempAnswerString.substring(answerBeginning, answerEnding);
+                var answer = tempAnswerString2.substring(answerBeginning2, answerEnding2);
+
+                var currentSection = subby.substring(sectionBeginning, sectionEnding);
+
+                document.getElementById("data").innerHTML += "Question: &nbsp;" + questionText + "<br>" + "Answer: &nbsp; &nbsp;" + answer + "<br><br>";
+
+                subby = subby.substring(sectionEnding);
+            }
+
+
+
+            function occurrences(string, subString, allowOverlapping) {
+
+                string += "";
+                subString += "";
+                if (subString.length <= 0) return (string.length + 1);
+
+                var n = 0,
+                    pos = 0,
+                    step = allowOverlapping ? 1 : subString.length;
+
+                while (true) {
+                    pos = string.indexOf(subString, pos);
+                    if (pos >= 0) {
+                        ++n;
+                        pos += step;
+                    } else break;
+                }
+                return n;
+            }
+    
+        </script>
+    </body>
+</html>
