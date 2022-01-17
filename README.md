@@ -1,3 +1,3 @@
-# CDAdkins.github.io
+# Click Below to Visit the Website
 
-cdadkins.github.io
+[cdadkins.com](https://www.cdadkins.com)
