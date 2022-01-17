@@ -98,6 +98,10 @@
                 var tempAnswerString = subby.substring(sectionBeginning + 30, sectionEnding);
                 // var answerBeginning = tempAnswerString.search(answerID) + 65;
 
+                // If the answer ID is 2 digits (which is a thing, apparently)
+                if (tempAnswerString.search(answerID + "\",answer\":") == -1) {
+                    var answerBeginning = tempAnswerString.search(answerID + "\"answer\":") + 13;
+                }
                 
                 // If the answer ID is 3 digits
                 if (tempAnswerString.search(answerID + "\",answer\":") == -1) {
