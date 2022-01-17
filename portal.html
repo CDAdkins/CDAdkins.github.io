@@ -89,43 +89,66 @@
                 var questionEnding = subby.search("\",\"active\"");
                 var questionText = subby.substring(questionBeginning, questionEnding);
 
-                // Finding the beginning and end of the correct answer ID.
-                var answerIDBeginning = sectionBeginning + 19;
-                var answerIDEnding = sectionBeginning + 23;
-                var answerID = subby.substring(answerIDBeginning, answerIDEnding);
+                // Finding the beginning and end of the correct answer ID. ending +21 if 2, +22 if 3, +23 if 4
+                // Check substring of 4, if valid number, continue, if not, check 3, if still not valid, it is 2
+                var answerIDBeginning = sectionBeginning + 19; // The start of the answer ID will always be + 19
+                var answerIDEnding = sectionBeginning + 23; // + 23 is assuming the answer ID is 4 digits long
+                var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Creating the substring
+                // We will now make sure our substring contains entirely numbers
+
+                if (!isNaN(answerID)) { // Confirming 4 digit ID
+                    console.log("Confirmed 4 digit ID: " + answerID);
+                }
+
+                if (isNaN(answerID)) { // If our substring contains a non-numerical character
+                    var answerIDEnding = sectionBeginning + 22; // Changing our substring ending to match the format of a three-digit answer ID
+                    var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
+                    if (!isNaN(answerID)) { // Confirming 3 digit ID
+                        console.log("Confirmed 3 digit ID: " + answerID);
+                    }
+                    if (isNaN(answerID)) { // Checking to see if the answer ID is valid, if not then we have a two-digit Answer ID
+                        var answerIDEnding = sectionBeginning + 21; // Changing our substring ending to match the format of a two-digit answer ID
+                        var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
+                        if (!isNaN(answerID)) { // Confirming 3 digit ID
+                            console.log("Confirmed 2 digit ID: " + answerID);
+                        }
+                    }
+                }
+
 
                 // Finding the beginning and end of the answer.
-                var tempAnswerString = subby.substring(sectionBeginning + 30, sectionEnding);
-                // var answerBeginning = tempAnswerString.search(answerID) + 65;
 
                 // If the answer ID is 2 digits (which is a thing, apparently)
-                if (tempAnswerString.search(answerID + "\",answer\":") == -1) {
-                    var answerBeginning = tempAnswerString.search(answerID + "\"answer\":") + 13;
+                if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 100) {
+                    var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 15;
+                    console.log("2 digit answer ID: " + answerID);
+                } else
+                    // If the answer ID is 3 digits
+                    if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 1000) { // If we find the answerID and it is three digits
+                        var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 16;
+                        console.log("3 digit answer ID: " + answerID);
+                    } else 
+                
+                        // If the answer ID is 4 digits
+                        if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) > 999) {
+                            var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 17;
+                            console.log("4 digit answer ID: " + answerID);
+                }
+
+                if (i == 0) {
+                    answerBeginning = answerBeginning - 2;
                 }
                 
-                // If the answer ID is 3 digits
-                if (tempAnswerString.search(answerID + "\",answer\":") == -1) {
-                    var answerBeginning = tempAnswerString.search(answerID + "\"answer\":") + 14;
-                }
+                var tempAnswerString = subby.substring(answerBeginning, sectionEnding);
 
-                // If the answer ID is 4 digits
-                if (tempAnswerString.search(answerID + "\"answer\":") == -1) {
-                    var answerBeginning = tempAnswerString.search(answerID + ",\"answer\":") + 15;
-                }
-                
-                var tempAnswerString2 = tempAnswerString.substring(answerBeginning - 14, answerBeginning + 50);
-                
-                var answerEnding = answerBeginning + 25;
+                var answerEnding = answerBeginning + tempAnswerString.indexOf("created") - 3;
 
-                var answerEnding2 = tempAnswerString2.search("created_at") - 3;
-                console.log(answerBeginning);
-
-                var answerBeginning2 = tempAnswerString2.search(answerID + ",\"answer\":") + 15;
                 
 
 
-                // var answer = tempAnswerString.substring(answerBeginning, answerEnding);
-                var answer = tempAnswerString2.substring(answerBeginning2, answerEnding2);
+                var answer = subby.substring(answerBeginning, answerEnding);
+
+                console.log(answer + "\n\n");
 
                 var currentSection = subby.substring(sectionBeginning, sectionEnding);
 
