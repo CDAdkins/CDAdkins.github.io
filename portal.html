@@ -29,156 +29,310 @@
             a:active {
                 color: #ac0101;
             }
+            
+            input[type=text] {
+                padding: 12px 20px;
+                box-sizing: border-box;
+                background-color: #121212;
+                border-color: #b8b8b8;
+                color: #ffffff;
+                font-size: 24px;
+            }
+
+            #button {
+                text-align: center;
+
+            }
+            
+            .button {
+                display: inline-block;
+                padding: 5px 20px;
+                font-size: 18px;
+                cursor: pointer;
+                text-align: center;
+                text-decoration: none;
+                outline: none;
+                color: #ffffff;
+                background-color: #a70000;
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 9px #666;
+            }
+            .button:hover {background-color: #900000}
+
+            .button:active {
+              background-color: #900000;
+              box-shadow: 0 5px #444;
+              transform: translateY(4px);
+            }
         </style>
     </head>
-
     <body>
-        <h1>Portal Answers</h1>
+        <div id="button"><h1>Portal Answers</h1></div>
+        <div id="button">
+            <label>Enter the XHR Data then Click the Button (Or Press Enter Because I Worked Hard on That)<br><br></label>
+            <input type ="text" id="dataBox" name="dataBox" size="100"> <br><br>
+            <button class="button" id="dewit" onclick="loadData()">Dew it</button>
+            <!-- <input type="image" src="data/doit.gif" id="sheev" onclick="loadData()" style="width:300;"> -->
+
+        </div>
         <p id="data"></p>
         <p><a href="index.html">Home</p>
 
 
-        <script>
+        <script> 
+            // Making the 'dew it' button activate when pressing enter, provided the text box is selected.
+            var input = document.getElementById("dataBox"); // Getting a reference to our data box by using its ID 'dataBox'
+
+            input.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) { // IF the key that was just pressed is 'Enter'
+                    document.getElementById("dewit").click();
+                }
+            });
+
             // Getting the data from the user.
             // data is the raw data from the website.
-            var data = window.prompt("Paste the contents of the XHR document: ");
+            var data;
+            function loadData() {
+                data = document.getElementById("dataBox").value;
 
-            // startingLocation is the index of the first instance of correct_answer_id.
-            var startingLocation = data.search("correct_answer_id");
+                // startingLocation is the index of the first instance of correct_answer_id.
+                var startingLocation = data.search("correct_answer_id");
 
-            // subby is the substring of the raw data containing the important information.
-            var subby = data.substring(startingLocation);
+                // subby is the substring of the raw data containing the important information.
+                var subby = data.substring(startingLocation);
 
-            // Getting and displaying the number of questions on the quiz.
-            var numQuestions = occurrences(subby, "correct_answer_id");
-            document.getElementById("data").innerHTML = "Number of Question: " + numQuestions + "<br><br>";
+                // Getting and displaying the number of questions on the quiz.
+                var numQuestions = occurrences(subby, "correct_answer_id");
+                document.getElementById("data").innerHTML = "Number of Question: " + numQuestions + "<br><br>";
 
-            // Listing the questions on the test.
-            // for (i = 0; i < numQuestions; i++) {
-            //     // Finding the beginning of the question.
-            //     var questionBeginning = subby.search("question_text\":\"");
-            //     // Finding the end of the question.
-            //     var questionEnding = subby.search("\",\"active\"");
-            //     var sectionEnding = subby.search("}}]},{");
-            //     // Creating a substring containing only the question's text.
-            //     var questionSubString = subby.substring(questionBeginning + 16, questionEnding);
+                for (i = 0; i < numQuestions; i++) {
+                    // Finding the beginning and end of the section.
+                    var sectionBeginning = subby.search("correct_answer_id");
+                    var sectionEnding = subby.search("}}]}") + 15;
+                    var sectionaText = subby.substring(sectionBeginning, sectionEnding);
 
-            //     var correctAnswerIDLocation = subby.search("correct_answer_id");
-            //     var correct_answer_id = subby.substring(correctAnswerIDLocation + 19, correctAnswerIDLocation + 23);
-            //     var answerBeginning = subby.search("\"id\":" + correct_answer_id);
-            //     var answerEnding = subby.search("\",\"created_at\"");
-            //     // var correctAnswer = subby.substring(answerBeginning + 19, answerEnding);
-            //     var correctAnswer = subby.substring(answerBeginning, answerEnding);
-            //     console.log(answerBeginning);
+                    // Finding the beginning and end of the question.
+                    var questionBeginning = subby.search("question_text") + 16;
+                    var questionEnding = subby.search("\",\"active\"");
+                    var questionText = subby.substring(questionBeginning, questionEnding);
 
-            //     // Displaying the question on the page.
-            //     document.getElementById("data").innerHTML += "Question: " + questionSubString + "<br>" + "Answer: " + correctAnswer + "<br><br>";
-            //     // Making the substring smaller in order to advance to the next question.
-            //     subby = subby.substring(sectionEnding + 17);
-            // }
+                    // Finding the beginning and end of the correct answer ID. ending +21 if 2, +22 if 3, +23 if 4
+                    // Check substring of 4, if valid number, continue, if not, check 3, if still not valid, it is 2
+                    var answerIDBeginning = sectionBeginning + 19; // The start of the answer ID will always be + 19
+                    var answerIDEnding = sectionBeginning + 23; // + 23 is assuming the answer ID is 4 digits long
+                    var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Creating the substring
+                    // We will now make sure our substring contains entirely numbers
 
-
-            for (i = 0; i < numQuestions; i++) {
-                // Finding the beginning and end of the section.
-                var sectionBeginning = subby.search("correct_answer_id");
-                var sectionEnding = subby.search("}}]}") + 15;
-                var sectionaText = subby.substring(sectionBeginning, sectionEnding);
-
-                // Finding the beginning and end of the question.
-                var questionBeginning = subby.search("question_text") + 16;
-                var questionEnding = subby.search("\",\"active\"");
-                var questionText = subby.substring(questionBeginning, questionEnding);
-
-                // Finding the beginning and end of the correct answer ID. ending +21 if 2, +22 if 3, +23 if 4
-                // Check substring of 4, if valid number, continue, if not, check 3, if still not valid, it is 2
-                var answerIDBeginning = sectionBeginning + 19; // The start of the answer ID will always be + 19
-                var answerIDEnding = sectionBeginning + 23; // + 23 is assuming the answer ID is 4 digits long
-                var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Creating the substring
-                // We will now make sure our substring contains entirely numbers
-
-                if (!isNaN(answerID)) { // Confirming 4 digit ID
-                    console.log("Confirmed 4 digit ID: " + answerID);
-                }
-
-                if (isNaN(answerID)) { // If our substring contains a non-numerical character
-                    var answerIDEnding = sectionBeginning + 22; // Changing our substring ending to match the format of a three-digit answer ID
-                    var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
-                    if (!isNaN(answerID)) { // Confirming 3 digit ID
-                        console.log("Confirmed 3 digit ID: " + answerID);
+                    if (!isNaN(answerID)) { // Confirming 4 digit ID
+                        //console.log("Confirmed 4 digit ID: " + answerID);
                     }
-                    if (isNaN(answerID)) { // Checking to see if the answer ID is valid, if not then we have a two-digit Answer ID
-                        var answerIDEnding = sectionBeginning + 21; // Changing our substring ending to match the format of a two-digit answer ID
+
+                    if (isNaN(answerID)) { // If our substring contains a non-numerical character
+                        var answerIDEnding = sectionBeginning + 22; // Changing our substring ending to match the format of a three-digit answer ID
                         var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
                         if (!isNaN(answerID)) { // Confirming 3 digit ID
-                            console.log("Confirmed 2 digit ID: " + answerID);
+                            //console.log("Confirmed 3 digit ID: " + answerID);
+                        }
+                        if (isNaN(answerID)) { // Checking to see if the answer ID is valid, if not then we have a two-digit Answer ID
+                            var answerIDEnding = sectionBeginning + 21; // Changing our substring ending to match the format of a two-digit answer ID
+                            var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
+                            if (!isNaN(answerID)) { // Confirming 3 digit ID
+                                //console.log("Confirmed 2 digit ID: " + answerID);
+                            }
                         }
                     }
+
+
+                    // Finding the beginning and end of the answer.
+
+                    // If the answer ID is 2 digits (which is a thing, apparently)
+                    if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 100) {
+                        var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 15;
+                        //console.log("2 digit answer ID: " + answerID);
+                    } else
+                        // If the answer ID is 3 digits
+                        if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 1000) { // If we find the answerID and it is three digits
+                            var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 16;
+                            //console.log("3 digit answer ID: " + answerID);
+                        } else 
+                    
+                            // If the answer ID is 4 digits
+                            if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) > 999) {
+                                var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 17;
+                                //console.log("4 digit answer ID: " + answerID);
+                    }
+
+                    if (i == 0) {
+                        answerBeginning = answerBeginning - 2;
+                    }
+
+                    var tempAnswerString = subby.substring(answerBeginning, sectionEnding);
+
+                    var answerEnding = answerBeginning + tempAnswerString.indexOf("created") - 3;
+
+
+
+
+                    var answer = subby.substring(answerBeginning, answerEnding);
+
+                    //console.log(answer + "\n\n");
+
+                    var currentSection = subby.substring(sectionBeginning, sectionEnding);
+
+                    document.getElementById("data").innerHTML += "Question: &nbsp;" + questionText + "<br>" + "Answer: &nbsp; &nbsp;" + answer + "<br><br>";
+
+                    subby = subby.substring(sectionEnding);
                 }
 
 
-                // Finding the beginning and end of the answer.
 
-                // If the answer ID is 2 digits (which is a thing, apparently)
-                if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 100) {
-                    var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 15;
-                    console.log("2 digit answer ID: " + answerID);
-                } else
-                    // If the answer ID is 3 digits
-                    if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 1000) { // If we find the answerID and it is three digits
-                        var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 16;
-                        console.log("3 digit answer ID: " + answerID);
-                    } else 
-                
-                        // If the answer ID is 4 digits
-                        if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) > 999) {
-                            var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 17;
-                            console.log("4 digit answer ID: " + answerID);
+                function occurrences(string, subString, allowOverlapping) {
+
+                    string += "";
+                    subString += "";
+                    if (subString.length <= 0) return (string.length + 1);
+
+                    var n = 0,
+                        pos = 0,
+                        step = allowOverlapping ? 1 : subString.length;
+
+                    while (true) {
+                        pos = string.indexOf(subString, pos);
+                        if (pos >= 0) {
+                            ++n;
+                            pos += step;
+                        } else break;
+                    }
+                    return n;
+                }
                 }
 
-                if (i == 0) {
-                    answerBeginning = answerBeginning - 2;
+                // startingLocation is the index of the first instance of correct_answer_id.
+                var startingLocation = data.search("correct_answer_id");
+
+                // subby is the substring of the raw data containing the important information.
+                var subby = data.substring(startingLocation);
+
+                // Getting and displaying the number of questions on the quiz.
+                var numQuestions = occurrences(subby, "correct_answer_id");
+                document.getElementById("data").innerHTML = "Number of Question: " + numQuestions + "<br><br>";
+
+                for (i = 0; i < numQuestions; i++) {
+                    // Finding the beginning and end of the section.
+                    var sectionBeginning = subby.search("correct_answer_id");
+                    var sectionEnding = subby.search("}}]}") + 15;
+                    var sectionaText = subby.substring(sectionBeginning, sectionEnding);
+
+                    // Finding the beginning and end of the question.
+                    var questionBeginning = subby.search("question_text") + 16;
+                    var questionEnding = subby.search("\",\"active\"");
+                    var questionText = subby.substring(questionBeginning, questionEnding);
+
+                    // Finding the beginning and end of the correct answer ID. ending +21 if 2, +22 if 3, +23 if 4
+                    // Check substring of 4, if valid number, continue, if not, check 3, if still not valid, it is 2
+                    var answerIDBeginning = sectionBeginning + 19; // The start of the answer ID will always be + 19
+                    var answerIDEnding = sectionBeginning + 23; // + 23 is assuming the answer ID is 4 digits long
+                    var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Creating the substring
+                    // We will now make sure our substring contains entirely numbers
+
+                    if (!isNaN(answerID)) { // Confirming 4 digit ID
+                        //console.log("Confirmed 4 digit ID: " + answerID);
+                    }
+
+                    if (isNaN(answerID)) { // If our substring contains a non-numerical character
+                        var answerIDEnding = sectionBeginning + 22; // Changing our substring ending to match the format of a three-digit answer ID
+                        var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
+                        if (!isNaN(answerID)) { // Confirming 3 digit ID
+                            //console.log("Confirmed 3 digit ID: " + answerID);
+                        }
+                        if (isNaN(answerID)) { // Checking to see if the answer ID is valid, if not then we have a two-digit Answer ID
+                            var answerIDEnding = sectionBeginning + 21; // Changing our substring ending to match the format of a two-digit answer ID
+                            var answerID = subby.substring(answerIDBeginning, answerIDEnding); // Overwriting the substring
+                            if (!isNaN(answerID)) { // Confirming 3 digit ID
+                                //console.log("Confirmed 2 digit ID: " + answerID);
+                            }
+                        }
+                    }
+
+
+                    // Finding the beginning and end of the answer.
+
+                    // If the answer ID is 2 digits (which is a thing, apparently)
+                    if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 100) {
+                        var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 15;
+                        //console.log("2 digit answer ID: " + answerID);
+                    } else
+                        // If the answer ID is 3 digits
+                        if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) < 1000) { // If we find the answerID and it is three digits
+                            var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 16;
+                            //console.log("3 digit answer ID: " + answerID);
+                        } else 
+                    
+                            // If the answer ID is 4 digits
+                            if (sectionaText.indexOf(answerID + ",\"answer\":") != -1 && parseInt(answerID) > 999) {
+                                var answerBeginning = sectionaText.indexOf(answerID + ",\"answer\":") + 17;
+                                //console.log("4 digit answer ID: " + answerID);
+                    }
+
+                    if (i == 0) {
+                        answerBeginning = answerBeginning - 2;
+                    }
+
+                    var tempAnswerString = subby.substring(answerBeginning, sectionEnding);
+
+                    var answerEnding = answerBeginning + tempAnswerString.indexOf("created") - 3;
+
+
+
+
+                    var answer = subby.substring(answerBeginning, answerEnding);
+
+                    //console.log(answer + "\n\n");
+
+                    var currentSection = subby.substring(sectionBeginning, sectionEnding);
+
+                    document.getElementById("data").innerHTML += "Question: &nbsp;" + questionText + "<br>" + "Answer: &nbsp; &nbsp;" + answer + "<br><br>";
+
+                    subby = subby.substring(sectionEnding);
                 }
-                
-                var tempAnswerString = subby.substring(answerBeginning, sectionEnding);
-
-                var answerEnding = answerBeginning + tempAnswerString.indexOf("created") - 3;
-
-                
-
-
-                var answer = subby.substring(answerBeginning, answerEnding);
-
-                console.log(answer + "\n\n");
-
-                var currentSection = subby.substring(sectionBeginning, sectionEnding);
-
-                document.getElementById("data").innerHTML += "Question: &nbsp;" + questionText + "<br>" + "Answer: &nbsp; &nbsp;" + answer + "<br><br>";
-
-                subby = subby.substring(sectionEnding);
-            }
 
 
 
-            function occurrences(string, subString, allowOverlapping) {
+                function occurrences(string, subString, allowOverlapping) {
 
-                string += "";
-                subString += "";
-                if (subString.length <= 0) return (string.length + 1);
+                    string += "";
+                    subString += "";
+                    if (subString.length <= 0) return (string.length + 1);
 
-                var n = 0,
-                    pos = 0,
-                    step = allowOverlapping ? 1 : subString.length;
+                    var n = 0,
+                        pos = 0,
+                        step = allowOverlapping ? 1 : subString.length;
 
-                while (true) {
-                    pos = string.indexOf(subString, pos);
-                    if (pos >= 0) {
-                        ++n;
-                        pos += step;
-                    } else break;
+                    while (true) {
+                        pos = string.indexOf(subString, pos);
+                        if (pos >= 0) {
+                            ++n;
+                            pos += step;
+                        } else break;
+                    }
+                    return n;
                 }
-                return n;
-            }
     
+
+            // W.I.P. I'm not sure how to handle authentication with portal... Yet!
+            // XHR Request (WIP)
+            // let xhr = new XMLHttpRequest(); // Creating the request using the default no arg.
+            
+            // xhr.open("GET", "http://cdadkins.com/portal");
+            // xhr.send();
+
+            // xhr.onload = function() {
+            //     //alert("Loaded: ${xhr.status} ${xhr.response}");
+            //     console.log(xhr.response);
+            //     console.log(xhr.status);
+            //     console.log(xhr.statusText);
+            // }
         </script>
     </body>
 </html>

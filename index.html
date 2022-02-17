@@ -23,6 +23,7 @@
             a:visited {
                 color: #ffffff;
             }
+
             /* hovered link */
             a:hover {
                 color: #a10030
@@ -31,13 +32,47 @@
             a:active {
                 color: #ac0101;
             }
+
+            #secret {
+                position: fixed;
+                bottom: 0;
+                right: 30;
+            }
+            #secret a:link {color: #121212;}
+            #secret a:visited {color: #121212;}
+            #secret a:hover {color: #ffd000; text-decoration: none;}
+
+            /* unvisited link */
+            b:link {
+                color: #000000;
+            }
+            /* visited link */
+            b:visited {
+                color: #000000;
+            }
+
+            /* hovered link */
+            b:hover {
+                color: #a10030
+            }
+            /* selected link */
+            b:active {
+                color: #ac0101;
+            }
+            
         </style>
     </head>
     <body>
         <h1>Welcome to CDAdkins.com</h1>
         <p>
-            A place for my stuff.
+            Keep an eye out for secrets...
         </p>
         <h3>| <a href="about.html">About Me</a> | <a href="programming.html">Programming</a> | <a href="dolfwick.html">Dolfwick</a> |</h3>
+        <h3><a href="portal.html"> Portal</h3>
+        <div id="secret"> 
+            <p>
+                <a href="secret.html">:)</a>
+            </p>
+        </div>
     </body>
 </html>
