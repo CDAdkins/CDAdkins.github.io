@@ -1,3 +1,3 @@
 # Click Below to Visit the Website
 
-[cdadkins.com](https://www.cdadkins.com)
+[cdadkins.com](https://cdadkins.com)
