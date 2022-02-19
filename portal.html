@@ -1,6 +1,10 @@
 <html>
     <head>
-        <title>Portal Answers</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <title>uBreakiCheat by Chris Adkins</title>
         <style>
             body {
                 background-color: #121212;
@@ -44,6 +48,10 @@
 
             }
             
+            .redText {
+                color:#c83b1f;
+            }
+
             .button {
                 display: inline-block;
                 padding: 5px 20px;
@@ -53,7 +61,7 @@
                 text-decoration: none;
                 outline: none;
                 color: #ffffff;
-                background-color: #a70000;
+                background-color: #a01b00;
                 border: none;
                 border-radius: 10px;
                 box-shadow: 0 9px #666;
@@ -65,19 +73,44 @@
               box-shadow: 0 5px #444;
               transform: translateY(4px);
             }
+
+            .instructions {
+                text-align: left;
+                margin-left: 33%;
+            }
+
+            .logo {
+                margin-bottom: 2px;
+            }
+
+            .quip {
+                font-size: 14px;
+            }
         </style>
     </head>
     <body>
-        <div id="button"><h1>Portal Answers</h1></div>
         <div id="button">
-            <label>Enter the XHR Data then Click the Button (Or Press Enter Because I Worked Hard on That)<br><br></label>
-            <input type ="text" id="dataBox" name="dataBox" size="100"> <br><br>
-            <button class="button" id="dewit" onclick="loadData()">Dew it</button>
+            <h1 class = "logo">UBREAK<span class = "redText">ICHEAT</span></h1>
+            <i class = "quip">Psst... hey kid. You wanna cheat on your homework?<br><br><br></i>
+            <label>How to Use:<br></label>
+        </div>
+
+        <div class="instructions">
+            <label>1. Make sure you are logged into portal<br></label>
+            <label>2. Paste the URL from the quiz you're taking into the text box<br></label>
+            <label>3. Copy all of the text from the page that opens (Triple click works best)<br></label>
+            <label>4. Paste the text you copied into the text box<br><br><br></label>
+        </div>
+
+        <div id="button">
+            <input type ="text" id="dataBox" name="dataBox" size="80%"> <br><br>
+            <button class="button" id="dewit" onclick="loadData()">Click Me!</button>
+        </div>
+
             <!-- <input type="image" src="data/doit.gif" id="sheev" onclick="loadData()" style="width:300;"> -->
 
-        </div>
         <p id="data"></p>
-        <p><a href="index.html">Home</p>
+        <p><a href="index.html">Home</a></p>
 
 
         <script> 
@@ -91,10 +124,25 @@
             });
 
             // Getting the data from the user.
-            // data is the raw data from the website.
-            var data;
-            function loadData() {
-                data = document.getElementById("dataBox").value;
+            var data; // Whatever the user types into the text box, could be a URL, could be the raw XHR data.
+            var urlCode; // This is the number at the end of a portal training URL, it will be used to access the API page with the answers.
+            const isAlphaNumeric = str => /^[a-z0-9]+$/gi.test(str); // Regex to check if a string is only letters / numbers.
+            const allNumbers = /\d+/; // Regex to get numbers from a URL.
+            function loadData() { // This is the main function where basically everything happens.
+
+                data = document.getElementById("dataBox").value; // Getting the data from the text box.
+
+                // If the first character of 'data is a letter, look for a number, add every consecutive number to a string.'
+                if (isAlphaNumeric(data[0]) && data[0] != undefined) { // Basically this means raw code has not been entered because the portal API always starts with '{'
+                                                                                                            // Therefore it will be treated as a URL                    
+                    console.log(data[0], "is alpha numeric"); // Reporting if the first character is alphanumeric
+                    urlCode = data.match(allNumbers); // Using Regex to grab every number from the URL
+                    console.log(urlCode); // Just logging the urlCode
+                    document.getElementById("dataBox").value = ""; // Making the data box blank so the user doesn't have to :)
+                    window.open("https://portal.ubif.net/api/kbase-articles/" + urlCode, "_blank"); // Open the portal API page in a new tab
+                } else {
+                    console.log(data[0], "is not alpha numberic");
+                }
 
                 // startingLocation is the index of the first instance of correct_answer_id.
                 var startingLocation = data.search("correct_answer_id");
@@ -183,6 +231,8 @@
                     document.getElementById("data").innerHTML += "Question: &nbsp;" + questionText + "<br>" + "Answer: &nbsp; &nbsp;" + answer + "<br><br>";
 
                     subby = subby.substring(sectionEnding);
+
+                    document.getElementById("dataBox").value = ""; // Making the data box blank so the user doesn't have to :)
                 }
 
 
