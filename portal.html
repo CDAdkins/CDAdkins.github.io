@@ -35,8 +35,8 @@
             }
             
             input[type=text] {
-                padding: 12px 20px;
-                box-sizing: border-box;
+                padding: 0px 0px;
+                box-sizing: content-box;
                 background-color: #121212;
                 border-color: #b8b8b8;
                 color: #ffffff;
@@ -55,7 +55,7 @@
             .button {
                 display: inline-block;
                 padding: 5px 20px;
-                font-size: 18px;
+                font-size: 14px;
                 cursor: pointer;
                 text-align: center;
                 text-decoration: none;
@@ -64,19 +64,24 @@
                 background-color: #a01b00;
                 border: none;
                 border-radius: 10px;
-                box-shadow: 0 9px #666;
+                box-shadow: 0 7px #666;
             }
             .button:hover {background-color: #900000}
 
             .button:active {
               background-color: #900000;
               box-shadow: 0 5px #444;
-              transform: translateY(4px);
+              transform: translateY(3px);
             }
 
             .instructions {
+                display: inline-block;
                 text-align: left;
-                margin-left: 33%;
+                margin-left: 0%;
+            }
+
+            .container {
+                text-align: center;
             }
 
             .logo {
@@ -95,15 +100,19 @@
             <label>How to Use:<br></label>
         </div>
 
-        <div class="instructions">
-            <label>1. Make sure you are logged into portal<br></label>
-            <label>2. Paste the URL from the quiz you're taking into the text box<br></label>
-            <label>3. Copy all of the text from the page that opens (Triple click works best)<br></label>
-            <label>4. Paste the text you copied into the text box<br><br><br></label>
+        <div class="container">
+            <div class="instructions">
+                <label>1. Make sure you are logged into portal<br></label>
+                <label>2. Paste the URL from the quiz you're taking into the text box<br></label>
+                <label>3. Copy all of the text from the page that opens (Triple click works best)<br></label>
+                <label>4. Paste the text you copied into the text box<br><br><br></label>
+            </div>
         </div>
+        
+
 
         <div id="button">
-            <input type ="text" id="dataBox" name="dataBox" size="80%"> <br><br>
+            <input type ="text" id="dataBox" name="dataBox" size="50%"> <br><br>
             <button class="button" id="dewit" onclick="loadData()">Click Me!</button>
         </div>
 
