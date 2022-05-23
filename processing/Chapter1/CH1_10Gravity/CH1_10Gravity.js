@@ -52,9 +52,6 @@ function draw() {
   guy.acceleration = createVector(direction.x, direction.y);
 
   guy.display();
-
-  let home = createA('http://cdadkins.com/index.html', 'Home');
-  home.position(20, height - 40);
 }
 
 function keyPressed() {
