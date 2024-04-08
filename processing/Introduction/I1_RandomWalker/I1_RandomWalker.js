@@ -11,21 +11,21 @@ function setup() {
   background(24);
   noStroke();
 
-  numWalkers = 100;
+  numWalkers = 200;
   walkerSize = 10;
   walkerAlpha = 255;
 
   for (let i = 0; i < numWalkers; i++) {
-    redGuys[i] = new Walker(255, 0, 0, walkerSize, walkerAlpha);
-    blueGuys[i] = new Walker(0, 0, 255, walkerSize, walkerAlpha);
-    yellowGuys[i] = new Walker(255, 255, 0, walkerSize, walkerAlpha);
+    redGuys[i] = new Walker(44, 85, 48, walkerSize, walkerAlpha);
+    blueGuys[i] = new Walker(115, 158, 138, walkerSize, walkerAlpha);
+    yellowGuys[i] = new Walker(243, 255, 182, walkerSize, walkerAlpha);
   }
 
   guy = new Walker(255, 0, 0, walkerSize, walkerAlpha);
 }
 
 function draw() {
-  // background(24);
+  background(24, 24, 24, 20);
   //guy.display();
 
   fill(255);
