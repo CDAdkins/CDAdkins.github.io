@@ -28,9 +28,9 @@ function draw() {
   rect(0, 0, width/3, width/50);
 
   if (keyIsDown(DOWN_ARROW) || keyIsDown(LEFT_ARROW)) {
-    angleA -= 0.000005;
+    angleA -= 0.00005;
   } else if (keyIsDown(UP_ARROW) || keyIsDown(RIGHT_ARROW)) {
-    angleA += 0.000005;
+    angleA += 0.00005;
   } else {
     if (angleV > 0) {
         angleV -= 0.0002;
