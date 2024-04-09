@@ -18,30 +18,30 @@ function draw() {
   noStroke();
   fill(240, 100, 160);
   rectMode(CENTER);
-  
 
 
   translate(width/2, height/2)
-  text("Acceleration: " + round(angleA*1000, 2), -width/2.1, -height/2.1);
-  text("Velocity: " + round(angleV*1000), -width/2.1, -height/2.25);
+  text("Acceleration: " + round(angleA*10000), -width/2.05, -height/2.1);
+  text("Velocity: " + round(angleV*1000), -width/2.05, -height/2.25);
   rotate(angle);
-  rect(0, 0, width/3, width/50);
+  rect(0, 0, width/2.5, width/50);
 
   if (keyIsDown(DOWN_ARROW) || keyIsDown(LEFT_ARROW)) {
     angleA -= 0.00005;
   } else if (keyIsDown(UP_ARROW) || keyIsDown(RIGHT_ARROW)) {
     angleA += 0.00005;
   } else {
-    if (angleV > 0) {
-        angleV -= 0.0002;
-        angleA = 0;
-    } else if (angleV < 0) {
-        angleV += 0.0002;
-        angleA = 0;
+    if (angleV > 0.001) {
+        angleV -= 0.002;
+        
+    } else if (angleV < -0.001) {
+        angleV += 0.002;
+        
     } else {
         angleV = 0;
-        angleA = 0;
+        fill(255);
     }
+    angleA = 0;
     
   }
 
