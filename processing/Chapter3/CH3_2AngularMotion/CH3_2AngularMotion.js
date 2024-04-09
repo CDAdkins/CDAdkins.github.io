@@ -21,8 +21,11 @@ function draw() {
 
 
   translate(width/2, height/2)
+  textAlign(LEFT);
   text("Acceleration: " + round(angleA*10000), -width/2.05, -height/2.1);
   text("Velocity: " + round(angleV*1000), -width/2.05, -height/2.25);
+  textAlign(CENTER);
+  text("Use the arrow keys to control the acceleration", 0, height/2.1);
   rotate(angle);
   rect(0, 0, width/2.5, width/50);
 
