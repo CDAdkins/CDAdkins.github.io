@@ -24,7 +24,7 @@ function setup() {
 function draw() {
   //background(24);
   text("Gaussian Distribution Between 0 and " + numRectangles, width/3, height/4);
-  text("Press any key to reset X", width/2.5, height/4 + 30)
+  text("Press any key to reset", width/2.5, height/4 + 30)
 
   for (let i = 0; i < generations; i++) { // This code runs once per "generation" as defined above
     chosenNumber = floor(randomGaussian() * numRectangles/10 + (numRectangles/2)); 
