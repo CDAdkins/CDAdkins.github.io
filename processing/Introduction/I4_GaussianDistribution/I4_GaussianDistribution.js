@@ -1,6 +1,6 @@
 let numRectangles;
 let gaussianNumbers;
-let chosenNumber; // The number that has been randomly selected, between 0 and numRectangles
+let chosenNumber;  // The number that has been randomly selected, between 0 and numRectangles
 let generations; // The number of random numbers you want to generate per frame. More is faster
 let rectWidth; // Width of each rectangle
 
@@ -10,9 +10,9 @@ function setup() {
   fill(100);
   textSize(height/30);
 
-  numRectangles = 100; // Number of rectangles
+  numRectangles = 250; // Number of rectangles
   gaussianNumbers = [];
-  generations = 50;
+  generations = 100;
   rectWidth = width/numRectangles;
 
   // Populating the gaussianNumbers array with 0's
@@ -34,6 +34,14 @@ function draw() {
   for (let i = 0; i < numRectangles; i++) {
     //rect( i * (width/numRectangles), height, width/numRectangles, gaussianNumbers[i]);
     rect(i * rectWidth, height, rectWidth, gaussianNumbers[i]);
+    if (gaussianNumbers[i] <= -windowHeight) {
+      background(24);
+      for (let i = 0; i < numRectangles; i++) {
+        gaussianNumbers[i] = 0;
+      }
+      
+    }
+    
   }
 }
 
