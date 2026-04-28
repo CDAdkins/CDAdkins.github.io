@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Padres Promo Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap');
+
+  :root {
+    --brown: #2D1A0E;
+    --brown-mid: #4A2C17;
+    --gold: #C8922A;
+    --gold-bright: #E8B84B;
+    --gold-pale: #F5D98A;
+    --cream: #F5EDD8;
+    --cream-muted: rgba(245,237,216,0.5);
+    --yes: #7EB648;
+    --no: #C0392B;
+    --live: #E8B84B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 150%; }
+
+  body {
+    background: var(--brown);
+    color: var(--cream);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.67rem 1.33rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -50deg, transparent, transparent 55px,
+      rgba(200,146,42,0.06) 55px, rgba(200,146,42,0.06) 57px
+    );
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,146,42,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 1.6rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .header-eyebrow {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.53rem;
+    letter-spacing: 0.47rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.27rem;
+  }
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.27rem;
+    letter-spacing: 0.33rem;
+    line-height: 1;
+    color: var(--cream);
+  }
+
+  .header-date {
+    font-size: 0.49rem;
+    letter-spacing: 0.2rem;
+    color: var(--cream-muted);
+    margin-top: 0.44rem;
+  }
+
+  .header-divider {
+    width: 2.67rem;
+    height: 2px;
+    background: var(--gold);
+    margin: 0.62rem auto 0;
+  }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.71rem;
+    width: 100%;
+    max-width: 73.33rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px)  { .grid { grid-template-columns: 1fr; } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(1.07rem); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--brown-mid);
+    border: 2px solid var(--gold);
+    border-radius: 6px;
+    padding: 1.24rem 1.07rem 1.07rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    gap: 0.53rem;
+  }
+
+  .card-corner {
+    position: absolute;
+    width: 0.53rem;
+    height: 0.53rem;
+    border-color: var(--gold-bright);
+    border-style: solid;
+  }
+  .card-corner.tl { top: 0.31rem; left: 0.31rem;   border-width: 1.5px 0 0 1.5px; }
+  .card-corner.tr { top: 0.31rem; right: 0.31rem;  border-width: 1.5px 1.5px 0 0; }
+  .card-corner.bl { bottom: 0.31rem; left: 0.31rem;  border-width: 0 0 1.5px 1.5px; }
+  .card-corner.br { bottom: 0.31rem; right: 0.31rem; border-width: 0 1.5px 1.5px 0; }
+
+  /* ── Icon + brand ── */
+  .card-brand-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .card-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.18rem;
+    color: var(--gold-bright);
+  }
+
+  .card-trigger-label {
+    font-size: 0.4rem;
+    letter-spacing: 0.2rem;
+    color: var(--cream-muted);
+    text-transform: uppercase;
+  }
+
+  .card-trigger {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.89rem;
+    letter-spacing: 0.09rem;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .card-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(200,146,42,0.2);
+  }
+
+  /* ── Result ── */
+  .result-area {
+    width: 100%;
+    padding: 0.8rem 0.62rem;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.27rem;
+  }
+
+  .result-area.yes     { background: rgba(126,182,72,0.12);  border: 1px solid var(--yes); }
+  .result-area.no      { background: rgba(192,57,43,0.12);   border: 1px solid var(--no); }
+  .result-area.live    { background: rgba(232,184,75,0.08);  border: 1px solid var(--live); }
+  .result-area.nogame  { background: rgba(200,146,42,0.08);  border: 1px solid var(--gold); }
+  .result-area.loading { background: transparent; border: 1px solid rgba(200,146,42,0.2); }
+
+  /* big stat number on strikeout / HR / SB cards */
+  .result-stat {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.49rem;
+    line-height: 1;
+    color: var(--gold-bright);
+  }
+
+  .result-stat-label {
+    font-size: 0.4rem;
+    letter-spacing: 0.2rem;
+    color: var(--cream-muted);
+    text-transform: uppercase;
+  }
+
+  /* win/loss label — same visual weight as the big stat number */
+  .result-game-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.49rem;
+    line-height: 1;
+    color: var(--gold-bright);
+    /* allow wrapping so long text doesn't overflow narrow cards */
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .result-verdict {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.33rem;
+    letter-spacing: 0.09rem;
+    line-height: 1;
+  }
+
+  .result-verdict.yes    { color: var(--yes); }
+  .result-verdict.no     { color: var(--no); }
+  .result-verdict.live   { color: var(--live); font-size: 0.98rem; }
+  .result-verdict.nogame { color: var(--gold-pale); font-size: 0.8rem; }
+
+  .result-sub {
+    font-size: 0.44rem;
+    letter-spacing: 0.07rem;
+    color: var(--cream-muted);
+  }
+  .result-sub span { color: var(--cream); font-weight: 700; }
+
+  .live-dot {
+    display: inline-block;
+    width: 0.31rem; height: 0.31rem;
+    background: var(--live);
+    border-radius: 50%;
+    margin-right: 0.22rem;
+    animation: pulse 1.2s ease-in-out infinite;
+    vertical-align: middle;
+    position: relative;
+    top: -0.04rem;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.35; transform: scale(0.65); }
+  }
+
+  .card-reward {
+    font-size: 0.44rem;
+    letter-spacing: 0.04rem;
+    color: var(--cream-muted);
+    line-height: 1.6;
+  }
+  .card-reward a { color: var(--gold-bright); text-decoration: none; }
+  .card-reward a:hover { text-decoration: underline; }
+
+  .loading-blink {
+    font-size: 0.53rem;
+    letter-spacing: 0.2rem;
+    color: var(--gold-bright);
+    animation: blink 0.9s step-end infinite;
+    padding: 0.53rem 0;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 1.24rem;
+    display: flex;
+    gap: 0.53rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid rgba(200,146,42,0.4);
+    color: var(--gold-bright);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.44rem;
+    letter-spacing: 0.2rem;
+    padding: 0.44rem 1.07rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: rgba(200,146,42,0.1); border-color: var(--gold-bright); }
+
+  .matchup-line {
+    font-size: 0.44rem;
+    letter-spacing: 0.09rem;
+    color: var(--cream-muted);
+    margin-top: 0.27rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">San Diego Padres</div>
+  <div class="header-title">Promo Tracker</div>
+  <div class="header-date" id="headerDate">Checking yesterday's game...</div>
+  <div class="header-divider"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="matchup-line" id="matchupLine"></div>
+
+<div class="footer">
+  <button class="refresh-btn" onclick="render()">↺ Refresh</button>
+</div>
+
+<script>
+const TEAM_ID = 135;
+
+const PROMOS = [
+  {
+    id: 'strikeouts',
+    icon: '🐾',
+    brand: 'Petco',
+    trigger: 'K-9 or more strikeouts',
+    reward: '25% off your total purchase at participating Petco locations with loyalty membership. Ask for "Padres K-9 Promotion" at checkout.',
+    rewardLink: { text: 'Petco.com/PadresK9', href: 'https://www.petco.com/PadresK-9' },
+    stat: (box, side) => {
+      const ps = box.teams[side].teamStats?.pitching;
+      if (ps?.strikeOuts !== undefined) return { value: ps.strikeOuts, label: 'Strikeouts' };
+      const pitchers = box.teams[side].pitchers || [];
+      const players  = box.teams[side].players;
+      let k = 0;
+      for (const pid of pitchers) k += players[`ID${pid}`]?.stats?.pitching?.strikeOuts ?? 0;
+      return { value: k, label: 'Strikeouts' };
+    },
+    check: (val) => val >= 9,
+    liveMsg: (val) => val >= 9 ? 'Already achieved' : `Need ${9 - val} more`,
+  },
+  {
+    id: 'homerun',
+    icon: '🍔',
+    brand: 'Jack in the Box',
+    trigger: 'Any Padres home run',
+    reward: 'Free Jumbo Jack with large drink purchase the day after. San Diego Jack in the Box locations or Jack App with code GOPADRES26.',
+    stat: (box, side) => {
+      const batters = box.teams[side].batters || [];
+      const players = box.teams[side].players;
+      let hrs = 0;
+      for (const pid of batters) hrs += players[`ID${pid}`]?.stats?.batting?.homeRuns ?? 0;
+      return { value: hrs, label: 'Home Runs' };
+    },
+    check: (val) => val >= 1,
+    liveMsg: (val) => val >= 1 ? 'Already hit one!' : 'None yet',
+  },
+  {
+    id: 'win',
+    icon: '🍟',
+    brand: "McDonald's",
+    trigger: 'Padres win',
+    reward: "Free medium fries with $2 purchase the day after a Padres win. Only on the app at participating McDonald's locations.",
+    stat: (box, side, isWin) => ({ value: isWin ? 1 : 0, label: isWin ? 'Win' : 'Loss' }),
+    check: (val) => val === 1,
+    liveMsg: (val, score) => score.padres > score.opp ? 'Currently winning' : score.padres < score.opp ? 'Currently losing' : 'Tied',
+    isWinCard: true,
+  },
+  {
+    id: 'stolenbase',
+    icon: '🛵',
+    brand: 'Uber Eats',
+    trigger: 'Any Padres stolen base',
+    reward: 'Look out for a special Uber Eats code for a deal on contactless delivery for restaurant takeout, groceries and more.',
+    stat: (box, side) => {
+      const bs = box.teams[side].teamStats?.batting;
+      if (bs?.stolenBases !== undefined) return { value: bs.stolenBases, label: 'Stolen Bases' };
+      const batters = box.teams[side].batters || [];
+      const players = box.teams[side].players;
+      let sb = 0;
+      for (const pid of batters) sb += players[`ID${pid}`]?.stats?.batting?.stolenBases ?? 0;
+      return { value: sb, label: 'Stolen Bases' };
+    },
+    check: (val) => val >= 1,
+    liveMsg: (val) => val >= 1 ? 'Already stolen one!' : 'None yet',
+  },
+];
+
+function getYesterdayDate() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const y   = d.getFullYear();
+  const m   = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const str = `${y}-${m}-${day}`;
+  console.log('[Padres Promos] Yesterday (local):', str);
+  return str;
+}
+
+function formatDisplayDate(dateStr) {
+  const [y, m, day] = dateStr.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+}
+
+function cardHTML(promo, state) {
+  const corners = `
+    <div class="card-corner tl"></div><div class="card-corner tr"></div>
+    <div class="card-corner bl"></div><div class="card-corner br"></div>`;
+
+  let resultHTML = '';
+
+  if (state.status === 'loading') {
+    resultHTML = `<div class="result-area loading"><div class="loading-blink">Loading ▋</div></div>`;
+
+  } else if (state.status === 'nogame') {
+    resultHTML = `
+      <div class="result-area nogame">
+        <div class="result-verdict nogame">No game</div>
+        <div class="result-sub">Padres had the day off</div>
+      </div>`;
+
+  } else {
+    const achieved = promo.check(state.value, state);
+    const cls      = state.status === 'live' ? 'live' : (achieved ? 'yes' : 'no');
+    let verdictText, subText, topContent;
+
+    if (state.status === 'live') {
+      verdictText = promo.isWinCard
+        ? promo.liveMsg(state.value, state.score)
+        : (achieved ? 'Yes ✓' : 'In Progress');
+      subText = `<span>${promo.liveMsg ? promo.liveMsg(state.value, state.score) : ''}</span>`;
+      if (promo.isWinCard) {
+        const s = state.score;
+        const lbl = s.padres > s.opp ? 'Padres Lead!' : s.padres < s.opp ? 'Padres Trail' : 'Tied Game';
+        topContent = `<div class="result-game-label">${lbl}</div>`;
+      } else {
+        topContent = `<div class="result-stat">${state.value}</div><div class="result-stat-label">${state.label}</div>`;
+      }
+    } else {
+      verdictText = achieved ? 'Yes ✓' : 'No ✗';
+      subText     = achieved ? '<span>Promo active today!</span>' : '<span>No promo today</span>';
+      if (promo.isWinCard) {
+        const winLabel  = achieved ? 'Padres Won! 🎉' : 'Padres Lost :(';
+        const friesLine = achieved
+          ? `<div class="result-stat-label">Free Fries! 🍟</div>`
+          : `<div class="result-stat-label">No Free Fries for You</div>`;
+        topContent = `<div class="result-game-label">${winLabel}</div>${friesLine}`;
+      } else {
+        topContent = `<div class="result-stat">${state.value}</div><div class="result-stat-label">${state.label}</div>`;
+      }
+    }
+
+    const liveDot = state.status === 'live' ? '<span class="live-dot"></span>' : '';
+
+    resultHTML = `
+      <div class="result-area ${cls}">
+        ${topContent}
+        <div class="result-verdict ${cls}">${liveDot}${verdictText}</div>
+        <div class="result-sub">${subText}</div>
+      </div>`;
+  }
+
+  const rewardLink = promo.rewardLink
+    ? ` <a href="${promo.rewardLink.href}" target="_blank">${promo.rewardLink.text}</a>`
+    : '';
+
+  return `
+    <div class="card">
+      ${corners}
+      <div class="card-brand-block">
+        <div class="card-icon">${promo.icon}</div>
+        <div class="card-brand">${promo.brand}</div>
+      </div>
+      <div class="card-trigger-label">Promo triggers on</div>
+      <div class="card-trigger">${promo.trigger}</div>
+      <div class="card-divider"></div>
+      ${resultHTML}
+      <div class="card-reward">${promo.reward}${rewardLink}</div>
+    </div>`;
+}
+
+function renderLoadingCards() {
+  document.getElementById('grid').innerHTML =
+    PROMOS.map(p => cardHTML(p, { status: 'loading' })).join('');
+}
+
+async function render() {
+  console.log('[Padres Promos] --- render() started ---');
+  renderLoadingCards();
+
+  const yesterday = getYesterdayDate();
+  document.getElementById('headerDate').textContent = formatDisplayDate(yesterday);
+
+  const schedUrl = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${yesterday}&teamId=${TEAM_ID}&gameType=R&hydrate=linescore`;
+  console.log('[Padres Promos] Fetching schedule:', schedUrl);
+  const schedRes  = await fetch(schedUrl);
+  const schedData = await schedRes.json();
+  console.log('[Padres Promos] Schedule data:', schedData);
+
+  const dates = schedData.dates || [];
+  const game  = dates[0]?.games?.find(g =>
+    g.status.abstractGameState === 'Final' ||
+    g.status.abstractGameState === 'Live'
+  );
+
+  if (!game) {
+    console.log('[Padres Promos] No game found');
+    document.getElementById('grid').innerHTML =
+      PROMOS.map(p => cardHTML(p, { status: 'nogame' })).join('');
+    document.getElementById('matchupLine').textContent = '';
+    return;
+  }
+
+  const isLive = game.status.abstractGameState === 'Live';
+  console.log('[Padres Promos] gamePk:', game.gamePk, '| isLive:', isLive);
+
+  const boxUrl = `https://statsapi.mlb.com/api/v1/game/${game.gamePk}/boxscore`;
+  console.log('[Padres Promos] Fetching boxscore:', boxUrl);
+  const boxRes = await fetch(boxUrl);
+  const box    = await boxRes.json();
+  console.log('[Padres Promos] Boxscore:', box);
+
+  const homeId     = box.teams.home.team.id;
+  const padresSide = homeId === TEAM_ID ? 'home' : 'away';
+  const oppSide    = padresSide === 'home' ? 'away' : 'home';
+
+  const padresRuns = box.teams[padresSide].teamStats?.batting?.runs ?? 0;
+  const oppRuns    = box.teams[oppSide].teamStats?.batting?.runs ?? 0;
+  const isWin      = !isLive && padresRuns > oppRuns;
+  const oppName    = box.teams[oppSide].team.name;
+  const score      = { padres: padresRuns, opp: oppRuns };
+
+  const awayLabel = padresSide === 'away' ? 'Padres' : oppName;
+  const homeLabel = padresSide === 'home' ? 'Padres' : oppName;
+  const awayRuns  = padresSide === 'away' ? padresRuns : oppRuns;
+  const homeRuns  = padresSide === 'home' ? padresRuns : oppRuns;
+
+  const status = isLive ? 'live' : 'final';
+
+  const cards = PROMOS.map(promo => {
+    const { value, label } = promo.stat(box, padresSide, isWin);
+    console.log(`[Padres Promos] ${promo.id}: value=${value}, achieved=${promo.check(value, { score })}`);
+    return cardHTML(promo, { status, value, label, isWin, score });
+  });
+
+  document.getElementById('grid').innerHTML = cards.join('');
+
+  const ml = document.getElementById('matchupLine');
+  ml.innerHTML = isLive
+    ? `<span style="color:var(--gold-bright)">● LIVE &nbsp;—&nbsp; </span>${awayLabel} ${awayRuns} — ${homeRuns} ${homeLabel}`
+    : `${awayLabel} ${awayRuns} — ${homeRuns} ${homeLabel}`;
+
+  console.log('[Padres Promos] --- render() complete ---');
+}
+
+render();
+</script>
+</body>
+</html>
